@@ -1,11 +1,11 @@
 package com.craftinginterpreters.scanner.lox
 
 import com.craftinginterpreters.scanner
-import com.craftinginterpreters.scanner.lox.TokenType.TokenType
-import com.craftinginterpreters.scanner.{Scanner, SourceCode, Token}
+import com.craftinginterpreters.scanner.{Scanner, SourceCode, Token, TokenType}
 
 import scala.collection.mutable.ListBuffer
 import scala.io.Source
+import scala.util.{Success, Try}
 
 /**
  * Scans a file and creates a SourceCode instance.
@@ -20,7 +20,7 @@ class LoxScanner extends Scanner {
   def error(line:Int, message: String): Unit = report(line, "", message)
 
 
-  def scan(sourceCode: SourceCode): List[Token] = {
+  def scan(sourceCode: SourceCode): Try[List[Token]] = {
 
     val tokens:ListBuffer[Token] = ListBuffer()
 
@@ -29,8 +29,8 @@ class LoxScanner extends Scanner {
       val someToken:Option[Token] = scanToken(sourceCode)
       someToken.map(token => tokens :+ token)
     }
-     tokens :+ scanner.Token(TokenType.EOF, "", Nil, line, startOffset)
-     tokens.toList
+     tokens :+ scanner.Token(LoxTokenType.EOF, "", Nil, line, startOffset)
+     Success(tokens.toList)
   }
 
   def nextLine(): Unit = {
@@ -59,21 +59,21 @@ class LoxScanner extends Scanner {
       nextPosition()
       true
     }
-    def handleSlash():Option[Token] = {
+    def handleSlash:Option[Token] = {
       // A comment goes until the end of the line.
       if (matchesNextChar('/')) {
-        while ((peek ne '\n') && !isAtEnd(currentOffset, sourceCode)) {
+        while ((peek.!=('\n')) && !isAtEnd(currentOffset, sourceCode)) {
           nextChar()
         }
         Option.empty
-      } else addToken(TokenType.SLASH)
+      } else addToken(LoxTokenType.SLASH)
 
     }
 
-    def string():Option[Token] = {
+    def string:Option[Token] = {
       val currentStart:Int = currentOffset
-      while ((peek ne '"') && !isAtEnd(currentOffset, sourceCode)) {
-        if (peek eq '\n') nextLine()
+      while ((peek.!=('"')) && !isAtEnd(currentOffset, sourceCode)) {
+        if (peek.==('\n')) nextLine()
         nextChar()
       }
 
@@ -91,7 +91,7 @@ class LoxScanner extends Scanner {
 
       // Trim the surrounding quotes.
       val value = sourceCode.text(startOffset + 1, currentOffset - 1)
-      val stringToken:Token = Token(TokenType.STRING, value, Nil, line, currentStart)
+      val stringToken:Token = Token(LoxTokenType.STRING, value, Nil, line, currentStart)
       Some(stringToken)
     }
 
@@ -122,36 +122,36 @@ class LoxScanner extends Scanner {
     // this does not look very logic
     val character = nextChar()
     val token:Option[Token] = character match {
-      case '(' => addToken(TokenType.LEFT_PAREN)
+      case '(' => addToken(LoxTokenType.LEFT_PAREN)
 
-      case ')' => addToken(TokenType.RIGHT_PAREN)
+      case ')' => addToken(LoxTokenType.RIGHT_PAREN)
 
-      case '{' => addToken(TokenType.LEFT_BRACE)
+      case '{' => addToken(LoxTokenType.LEFT_BRACE)
 
-      case '}' => addToken(TokenType.RIGHT_BRACE)
+      case '}' => addToken(LoxTokenType.RIGHT_BRACE)
 
-      case ',' => addToken(TokenType.COMMA)
+      case ',' => addToken(LoxTokenType.COMMA)
 
-      case '.' => addToken(TokenType.DOT)
-      case '-' => addToken(TokenType.MINUS)
+      case '.' => addToken(LoxTokenType.DOT)
+      case '-' => addToken(LoxTokenType.MINUS)
 
-      case '+' => addToken(TokenType.PLUS)
+      case '+' => addToken(LoxTokenType.PLUS)
 
-      case ';' => addToken(TokenType.SEMICOLON)
+      case ';' => addToken(LoxTokenType.SEMICOLON)
 
-      case '*' => addToken(TokenType.STAR)
-      case '!' => addToken(if (matchesNextChar('=')) TokenType.BANG_EQUAL else TokenType.BANG)
-      case '<' => addToken(if (matchesNextChar('=')) TokenType.LESS_EQUAL else TokenType.LESS)
-      case '>' => addToken(if (matchesNextChar('=')) TokenType.GREATER_EQUAL else TokenType.GREATER)
-      case '=' => addToken(if (matchesNextChar('=')) TokenType.EQUAL_EQUAL else TokenType.EQUAL)
-      case '/' => handleSlash()
+      case '*' => addToken(LoxTokenType.STAR)
+      case '!' => addToken(if (matchesNextChar('=')) LoxTokenType.BANG_EQUAL else LoxTokenType.BANG)
+      case '<' => addToken(if (matchesNextChar('=')) LoxTokenType.LESS_EQUAL else LoxTokenType.LESS)
+      case '>' => addToken(if (matchesNextChar('=')) LoxTokenType.GREATER_EQUAL else LoxTokenType.GREATER)
+      case '=' => addToken(if (matchesNextChar('=')) LoxTokenType.EQUAL_EQUAL else LoxTokenType.EQUAL)
+      case '/' => handleSlash
       case ' ' => Option.empty
       case '\t' => Option.empty
       case '\r' => Option.empty
       case '\n' =>
         nextLine()
         Option.empty
-      case '"' => string()
+      case '"' => string
       case someChar =>
         if (isDigit(someChar)) number
         else if (isAlpha(someChar)) identifier
@@ -171,7 +171,7 @@ class LoxScanner extends Scanner {
     sourceFile.close()
     source
   }
-  def scanFile(fileName: String):List[Token] = {
+  def scanFile(fileName: String):Try[List[Token]] = {
     val source:String = readFile(fileName)
     val sourceCode:SourceCode = new SourceCode(source)
     scan(sourceCode)
