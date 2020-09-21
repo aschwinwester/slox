@@ -17,6 +17,7 @@ class LoxScanner(val messageListeners: List[MessageListener]) extends Scanner wi
   private val stringLexer = new StringLexer(messageListeners)
   private val numberLexer = new NumberLexer(messageListeners)
   private val wordLexer = new IdentifierOrKeywordLexer(messageListeners)
+  private val symbolLexer = new SymbolLexer(messageListeners)
 
   def scan(sourceCode: SourceCode): Try[List[Token]] = {
 
@@ -54,10 +55,12 @@ class LoxScanner(val messageListeners: List[MessageListener]) extends Scanner wi
     val p = numberLexer.pattern
     val s = stringLexer.pattern
     val k = wordLexer.pattern
+    val y = symbolLexer.pattern
     val tokenWithPos:(Try[Token], ScannerPosition) = char match {
       case s() => stringLexer.getToken(sourceCode, pos)
       case p() => numberLexer.getToken(sourceCode, pos)
       case k() => wordLexer.getToken(sourceCode, pos)
+      case y() => symbolLexer.getToken(sourceCode, pos)
       case ' ' => skipToken(' ', pos); scanToken(sourceCode, pos.skipPosition)
       case '\t' => skipToken('\t', pos); scanToken(sourceCode, pos.skipPosition)
       case '\r' => skipToken('\r', pos); scanToken(sourceCode, pos.skipPosition)
