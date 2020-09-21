@@ -1,10 +1,15 @@
 package com.craftinginterpreters.scanner
 
-class SourceCode(val source:String) {
+case class SourceCode(source:String) {
 
   def length:Int = source.length
 
   def text(from:Int, to:Int):String = source.substring(from, to)
 
-  def charAt(index:Int) = source.charAt(index)
+  def charAt(index:Int): Char = source.charAt(index)
+
+  def isAtEnd(offset:Int): Boolean = offset >= source.length
+
+  def peek(currentOffset:Int): Char = if (isAtEnd(currentOffset)) '\0' else charAt(currentOffset)
+
 }

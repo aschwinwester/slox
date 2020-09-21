@@ -4,47 +4,59 @@ import com.craftinginterpreters.scanner.TokenType
 
 sealed trait LoxTokenType extends TokenType
 sealed trait SingleSymbolToken extends LoxTokenType {def character: Char;}
+sealed trait NonSingleSymbolToken extends LoxTokenType {def characters: String;}
+sealed trait KeywordToken extends LoxTokenType {def characters: String;}
+
+case class Keyword(characters:String) extends KeywordToken
+case class SingleSymbol(character:Char) extends SingleSymbolToken
+case class NonSingleSymbol(characters: String) extends NonSingleSymbolToken
 
 object LoxTokenType {
 
   // Single-character tokens.
-  case object LEFT_PAREN extends SingleSymbolToken {val character='('}
 
-  case object RIGHT_PAREN extends LoxTokenType
+  val LEFT_BRACE:SingleSymbol = SingleSymbol('{')
 
-  case object LEFT_BRACE extends LoxTokenType
+  val RIGHT_BRACE:SingleSymbol = SingleSymbol('}')
 
-  case object RIGHT_BRACE extends LoxTokenType
+  val COMMA:SingleSymbol = SingleSymbol(',')
 
-  case object COMMA extends LoxTokenType
+  val DOT:SingleSymbol = SingleSymbol('.')
 
-  case object DOT extends LoxTokenType
+  val SEMICOLON:SingleSymbol = SingleSymbol(';')
 
-  case object MINUS extends LoxTokenType
+  val BANG:SingleSymbol = SingleSymbol('!')
 
-  case object PLUS extends LoxTokenType
+  // mathematical operators
 
-  case object SEMICOLON extends LoxTokenType
+  val MINUS:SingleSymbol = SingleSymbol('-')
 
-  case object SLASH extends LoxTokenType
+  val PLUS:SingleSymbol = SingleSymbol('+')
 
-  case object STAR extends LoxTokenType
+  val SLASH:SingleSymbol = SingleSymbol('/')
 
-  case object BANG extends LoxTokenType
+  val STAR:SingleSymbol = SingleSymbol('*')
 
-  case object BANG_EQUAL extends LoxTokenType
+  // grouping
+  val LEFT_PAREN:SingleSymbol = SingleSymbol('(')
 
-  case object EQUAL extends LoxTokenType
+  val RIGHT_PAREN:SingleSymbol = SingleSymbol(')')
 
-  case object EQUAL_EQUAL extends LoxTokenType
 
-  case object GREATER extends LoxTokenType
+  // equality operators
+  val BANG_EQUAL:NonSingleSymbol = NonSingleSymbol("!=")
 
-  case object GREATER_EQUAL extends LoxTokenType
+  val EQUAL:SingleSymbol = SingleSymbol('=')
 
-  case object LESS extends LoxTokenType
+  val EQUAL_EQUAL:NonSingleSymbol = NonSingleSymbol("==")
 
-  case object LESS_EQUAL extends LoxTokenType
+  val GREATER:SingleSymbol = SingleSymbol('>')
+
+  val GREATER_EQUAL:NonSingleSymbol = NonSingleSymbol(">=")
+
+  val LESS:SingleSymbol = SingleSymbol('<')
+
+  val LESS_EQUAL:NonSingleSymbol = NonSingleSymbol("<=")
 
   // Literals.
   case object IDENTIFIER extends LoxTokenType
@@ -54,38 +66,40 @@ object LoxTokenType {
   case object NUMBER extends LoxTokenType
 
   // Keywords.
-  case object AND extends LoxTokenType
+  val AND:Keyword = Keyword("and")
 
-  case object CLASS extends LoxTokenType
+  val CLASS:Keyword = Keyword("class")
 
-  case object ELSE extends LoxTokenType
+  val ELSE:Keyword = Keyword("else")
 
-  case object FALSE extends LoxTokenType
+  val FALSE:Keyword = Keyword("false")
 
-  case object FUN extends LoxTokenType
+  val FUN:Keyword = Keyword("fun")
 
-  case object FOR extends LoxTokenType
+  val FOR:Keyword = Keyword("for")
 
-  case object IF extends LoxTokenType
+  val IF:Keyword = Keyword("if")
 
-  case object NIL extends LoxTokenType
+  val NIL:Keyword = Keyword("nil")
 
-  case object OR extends LoxTokenType
+  val OR:Keyword = Keyword("or")
 
-  case object PRINT extends LoxTokenType
+  val PRINT:Keyword = Keyword("print")
 
-  case object RETURN extends LoxTokenType
+  val RETURN:Keyword = Keyword("return")
 
-  case object SUPER extends LoxTokenType
+  val SUPER:Keyword = Keyword("super")
 
-  case object THIS extends LoxTokenType
+  val THIS:Keyword = Keyword("this")
 
-  case object TRUE extends LoxTokenType
+  val TRUE:Keyword = Keyword("true")
 
-  case object VAR extends LoxTokenType
+  val VAR:Keyword = Keyword("var")
 
-  case object WHILE extends LoxTokenType
+  val WHILE:Keyword = Keyword("while")
 
-  case object EOF extends LoxTokenType
+  // other
+
+  val EOF:Keyword = Keyword("eof")
 
 }
