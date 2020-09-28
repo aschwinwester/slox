@@ -23,4 +23,17 @@ class LoxScannerTest extends AnyFunSuite {
       case Failure(_) => assert(false)
     }
   }
+  test("Should match function") {
+    val tlt:Try[List[Token]] = new LoxScanner(List(ConsoleMessageListener)).scanFile("test_function.lox")
+    tlt match {
+      case Success(lt) => {
+        assert(lt.exists(t => t.tokenType == LoxTokenType.FUN))
+        assert(lt.exists(t => t.tokenType == LoxTokenType.IF))
+        assert(lt.exists(t => t.tokenType == LoxTokenType.PRINT))
+        assert(lt.exists(t => t.tokenType == LoxTokenType.LEFT_BRACE))
+      }
+      case Failure(_) => assert(false)
+    }
+  }
+
 }

@@ -61,10 +61,10 @@ class LoxScanner(val messageListeners: List[MessageListener]) extends Scanner wi
       case p() => numberLexer.getToken(sourceCode, pos)
       case k() => wordLexer.getToken(sourceCode, pos)
       case y() => symbolLexer.getToken(sourceCode, pos)
-      case ' ' => skipToken(' ', pos); scanToken(sourceCode, pos.skipPosition)
-      case '\t' => skipToken('\t', pos); scanToken(sourceCode, pos.skipPosition)
-      case '\r' => skipToken('\r', pos); scanToken(sourceCode, pos.skipPosition)
-      case '\n' => skipToken('\n', pos); scanToken(sourceCode, pos.nextLine.skipPosition)
+      case ' ' => skipToken(' ', "space", pos); scanToken(sourceCode, pos.skipPosition)
+      case '\t' => skipToken('\t', "tab", pos); scanToken(sourceCode, pos.skipPosition)
+      case '\r' => skipToken('\r', "read", pos); scanToken(sourceCode, pos.skipPosition)
+      case '\n' => skipToken('\n', "newline", pos); scanToken(sourceCode, pos.nextLine.skipPosition)
 
 
       case _ => (Success(Token(LoxTokenType.EOF, "", Nil, pos.line, pos.currentOffset)), pos.nextLine)
@@ -73,8 +73,8 @@ class LoxScanner(val messageListeners: List[MessageListener]) extends Scanner wi
     tokenWithPos
   }
 
-  private def skipToken(c:Char, pos:ScannerPosition):Unit =
-    report(pos.line, "position %s".format(pos.currentOffset), "skipping token [%s]".format(c))
+  private def skipToken(c:Char, name:String, pos:ScannerPosition):Unit =
+    report(pos.line, "position %s".format(pos.currentOffset), "skipping %s token [%s] ".format(name, c))
 
   private def readFile(fileName: String): String = {
     val sourceFile = Source.fromResource(fileName)

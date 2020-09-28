@@ -1,0 +1,7 @@
+fun isSmaller(a, b) {
+    if (a < b) {
+      print "yes";
+    } else {
+      print "no";
+    }
+}

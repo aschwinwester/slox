@@ -10,6 +10,6 @@ case class SourceCode(source:String) {
 
   def isAtEnd(offset:Int): Boolean = offset >= source.length
 
-  def peek(currentOffset:Int): Char = if (isAtEnd(currentOffset)) '\0' else charAt(currentOffset)
+  def peek(currentOffset:Int): Char = if (isAtEnd(currentOffset)) '\u0000' else charAt(currentOffset)
 
 }

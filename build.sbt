@@ -1,6 +1,6 @@
 // The simplest possible sbt build file is just one line:
 
-scalaVersion := "2.12.8"
+scalaVersion := "2.13.3"
 // That is, to create a valid sbt build, all you've got to do is define the
 // version of Scala you'd like your project to use.
 
@@ -23,8 +23,8 @@ version := "1.0"
 
 // Want to use a published library in your project?
 // You can define other libraries as dependencies in your build like this:
-libraryDependencies += "org.typelevel" %% "cats-core" % "1.6.0"
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.0" % Test
+libraryDependencies += "org.typelevel" %% "cats-core" % "2.2.0"
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.2" % Test
 // Here, `libraryDependencies` is a set of dependencies, and by using `+=`,
 // we're adding the cats dependency to the set of dependencies that sbt will go
 // and fetch when it starts up.
