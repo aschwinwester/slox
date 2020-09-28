@@ -14,7 +14,7 @@ scalaVersion := "2.13.3"
 
 name := "slox"
 organization := "com.slox"
-version := "1.0"
+version := "0.1.0"
 
 // Note, it's not required for you to define these three settings. These are
 // mostly only necessary if you intend to publish your library's binaries on a
