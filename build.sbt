@@ -13,7 +13,7 @@ scalaVersion := "2.13.3"
 // It's possible to define many kinds of settings, such as:
 
 name := "slox"
-organization := "com.slox"
+organization := "com.craftinginterpreters"
 version := "0.1.0"
 
 // Note, it's not required for you to define these three settings. These are
