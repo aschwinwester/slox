@@ -2,3 +2,12 @@ language: scala
 scala:
   - 2.12.2
   - 2.13.3
+branches:
+  only:
+    - master
+notifications:
+  email:
+    recipients:
+      - aschwin.wester@gmail.com
+jdk:
+  - openjdk11
