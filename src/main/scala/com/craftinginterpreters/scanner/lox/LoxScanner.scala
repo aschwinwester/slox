@@ -18,6 +18,7 @@ class LoxScanner(val messageListeners: List[MessageListener]) extends Scanner wi
   private val numberLexer = new NumberLexer(messageListeners)
   private val wordLexer = new IdentifierOrKeywordLexer(messageListeners)
   private val symbolLexer = new SymbolLexer(messageListeners)
+  private val commentLexer = new CommentLexer(messageListeners)
 
   def scan(sourceCode: SourceCode): Try[List[Token]] = {
 
@@ -56,10 +57,20 @@ class LoxScanner(val messageListeners: List[MessageListener]) extends Scanner wi
     val s = stringLexer.pattern
     val k = wordLexer.pattern
     val y = symbolLexer.pattern
+    val m = commentLexer.pattern
     val tokenWithPos:(Try[Token], ScannerPosition) = char match {
       case s() => stringLexer.getToken(sourceCode, pos)
       case p() => numberLexer.getToken(sourceCode, pos)
       case k() => wordLexer.getToken(sourceCode, pos)
+      case m() => 
+        if (CommentLexer.isComment(sourceCode, pos)) {
+
+          val (tryToken, newPos) = commentLexer.getToken(sourceCode, pos)
+          tryToken match {
+            case Success(_) => scanToken(sourceCode, newPos)
+            case _ => return (tryToken, newPos)
+          }
+        } else symbolLexer.getToken(sourceCode, pos)
       case y() => symbolLexer.getToken(sourceCode, pos)
       case ' ' => skipToken(' ', "space", pos); scanToken(sourceCode, pos.skipPosition)
       case '\t' => skipToken('\t', "tab", pos); scanToken(sourceCode, pos.skipPosition)
@@ -78,7 +89,7 @@ class LoxScanner(val messageListeners: List[MessageListener]) extends Scanner wi
 
   private def readFile(fileName: String): String = {
     val sourceFile = Source.fromResource(fileName)
-    val source = sourceFile.getLines().mkString
+    val source = sourceFile.getLines().mkString("\n")
     sourceFile.close()
     source
   }

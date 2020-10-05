@@ -10,6 +10,7 @@ sealed trait KeywordToken extends LoxTokenType {def characters: String;}
 case class Keyword(characters:String) extends KeywordToken
 case class SingleSymbol(character:Char) extends SingleSymbolToken
 case class NonSingleSymbol(characters: String) extends NonSingleSymbolToken
+case class NonToken(value:String) extends LoxTokenType
 
 object LoxTokenType {
 
@@ -65,6 +66,7 @@ object LoxTokenType {
 
   case object NUMBER extends LoxTokenType
 
+
   // Keywords.
   val AND:Keyword = Keyword("and")
 
@@ -99,7 +101,8 @@ object LoxTokenType {
   val WHILE:Keyword = Keyword("while")
 
   // other
+  val COMMENT:NonToken = NonToken("comment")
+  val EOF:NonToken = NonToken("eof")
 
-  val EOF:Keyword = Keyword("eof")
 
 }

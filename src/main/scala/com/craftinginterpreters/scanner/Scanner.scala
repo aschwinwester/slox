@@ -7,4 +7,6 @@ trait Scanner {
 
   def isDigit(c: Char):Boolean = c >= '0' && c <= '9'
 
+  def isSlash(c: Char):Boolean = c.==('/')
+
 }
