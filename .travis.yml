@@ -1,6 +1,6 @@
 language: scala
 scala:
-  - 2.13.3
+  - 3.7.4
 branches:
   only:
     - master
@@ -9,4 +9,4 @@ notifications:
     recipients:
       - aschwin.wester@gmail.com
 jdk:
-  - openjdk11
+  - openjdk21
